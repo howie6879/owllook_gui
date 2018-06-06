@@ -2,5 +2,6 @@
 <RCC version="1.0">
     <qresource prefix="/resource">
         <file alias="images/owl.png">./resource/images/owl.png</file>
+        <file alias="qss/main.qss.css">./resource/qss/main.qss.css</file>
     </qresource>
 </RCC>

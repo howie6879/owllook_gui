@@ -3,15 +3,16 @@
  Created by howie.hu at 2018/5/23.
 """
 import asyncio
-import os
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QAction, QApplication, QDesktopWidget, QHBoxLayout, QLabel, QMainWindow, QMenu, QPushButton, \
-    QSystemTrayIcon, QVBoxLayout, QWidget
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QHBoxLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout, \
+    QWidget
 
 from owllook_gui.owl_resource import *
 from owllook_gui.config import Config
-from owllook_gui.wigdets.system_tray import SystemTray
+from owllook_gui.spider import get_novels_info
+
+from owllook_gui.wigdets import load_style_sheet, SystemTray
 
 MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
 
@@ -21,16 +22,20 @@ class OwlHome(QMainWindow):
     def __init__(self, event_loop=None, parents=None):
         super(OwlHome, self).__init__(parent=parents)
         self.icon_path = ':/resource/images/owl.png'
+
         self.system_tray_ins = SystemTray(icon_path=self.icon_path, parent=self)
-        self.event_loop = event_loop
+        self.event_loop = event_loop if event_loop else asyncio.get_event_loop()
         self.init_ui()
 
     def init_ui(self):
+        # 加载样式
+        load_style_sheet('main')
+        # 设置图标以及标题
         self.setWindowTitle(Config.APP_TITLE)
-
         self.setWindowIcon(QtGui.QIcon(self.icon_path))
         # 布局
         self.label = QLabel('书架暂无数据')
+        self.label.setFont(QtGui.QFont('SansSerif', 13))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
 
         self.v_box = QVBoxLayout()
@@ -64,11 +69,10 @@ class OwlHome(QMainWindow):
         pass
 
     def func_refresh(self):
-        # self.event_loop.create_task(hello(3333))
-        pass
+        self.event_loop.create_task(get_novels_info(class_name='so', novels_name='intitle:雪中悍刀行 小说 阅读'))
 
     def func_search_book(self):
-        pass
+        self.event_loop.create_task(get_novels_info(class_name='baidu', novels_name='intitle:雪中悍刀行 小说 阅读'))
 
     def func_win_center(self):
         screen = QDesktopWidget().screenGeometry()

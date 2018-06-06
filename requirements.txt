@@ -1,2 +1,5 @@
+aiohttp
+async_timeout
+html5lib
 PyQt5>=5.10.1
 quamash

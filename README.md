@@ -6,6 +6,7 @@ owllook的客户端小工具，目的是为了监控喜欢的小说是否有更�
 - 公众号：[粮草小说](http://oe7yjec8x.bkt.clouddn.com/howie/2018-03-13-%E7%B2%AE%E8%8D%89%E5%B0%8F%E8%AF%B4.jpg-blog.howie)
 - 终端版：[NIYT](https://github.com/howie6879/NIYT)
 
+ps：在看QT，同样是练手项目~
 
 ### 概述
 
