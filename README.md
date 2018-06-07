@@ -16,14 +16,19 @@ ps：在看QT，同样是练手项目~
 - Windows
 - Linux
 
-具体下载地址请看[]()，欢迎提交`PR`和`issue`
+具体下载地址请看[releases](https://github.com/howie6879/owllook_gui/releases)，下载好就可以直接使用，欢迎提交`PR`和`issue`
 
 ### 安装
 
-`owllook_gui`由`PyQt5`编写，下面是安装步骤：
+如果想使用还在开发的最新功能，可以自行安装，`owllook_gui`由`PyQt5`编写，下面是安装步骤：
 
 ```python
-
+# 下载源码
+git clone https://github.com/howie6879/owllook_gui.git
+# 保证环境3.5+
+pip install requirements.txt
+cd owllook_gui
+python owllook.py
 ```
 
 ### 特性&截图
@@ -37,21 +42,13 @@ ps：在看QT，同样是练手项目~
 
 #### 截图
 
-**主界面**
-
-![home](./docs/images/home.jpg)
-
-**搜索**
-
-![search](./docs/images/search.jpg)
-
 **托盘**
 
 ![sys_tray](./docs/images/sys_tray.jpg)
 
-**关于**
+**主界面**
 
-![about](./docs/images/about.jpg)
+![home](/Users/howie/Documents/work/pyqt/git/owllook_gui/docs/images/home.jpg)
 
 ### 协议
 

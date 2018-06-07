@@ -4,7 +4,7 @@
 """
 import asyncio
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 
 from owllook_gui.owl_resource import *
 from owllook_gui.config import Config

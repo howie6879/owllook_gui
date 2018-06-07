@@ -40,7 +40,7 @@ class SoNovels(BaseNovels):
             netloc = urlparse(url).netloc
 
             if netloc in self.latest_rules.keys():
-                if not url or 'baidu' in url or 'baike.so.com' in url or netloc in self.black_domain:
+                if not url or 'baidu' in url or 'baike.so.com' in url or '.html' in url or netloc in self.black_domain:
                     return None
                 return {
                     'title': title,
