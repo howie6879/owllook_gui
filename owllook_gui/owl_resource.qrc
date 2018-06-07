@@ -1,7 +1,11 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource prefix="/resource">
+        <file alias="images/clean.png">./resource/images/clean.png</file>
+        <file alias="images/lcxs.jpg">./resource/images/lcxs.jpg</file>
         <file alias="images/owl.png">./resource/images/owl.png</file>
+        <file alias="qss/about.qss.css">./resource/qss/about.qss.css</file>
         <file alias="qss/main.qss.css">./resource/qss/main.qss.css</file>
+        <file alias="qss/search.qss.css">./resource/qss/search.qss.css</file>
     </qresource>
 </RCC>

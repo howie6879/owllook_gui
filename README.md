@@ -31,12 +31,27 @@ ps：在看QT，同样是练手项目~
 #### 特性
 
 - 小说监控
+- 小说检索
 - 最新章节搜索阅读
 
 
 #### 截图
 
-![demo01](./docs/images/demo01.jpg)
+**主界面**
+
+![home](./docs/images/home.jpg)
+
+**搜索**
+
+![search](./docs/images/search.jpg)
+
+**托盘**
+
+![sys_tray](./docs/images/sys_tray.jpg)
+
+**关于**
+
+![about](./docs/images/about.jpg)
 
 ### 协议
 

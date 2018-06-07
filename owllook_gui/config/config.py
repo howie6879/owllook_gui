@@ -21,6 +21,7 @@ class Config:
     APP_TITLE = 'owllook 小说监控'
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     LOGGER = logging.getLogger()
+    VERSION = 0.1
 
     # Engine config
     URL_PHONE = 'https://m.baidu.com/s'

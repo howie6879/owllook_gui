@@ -1,0 +1,23 @@
+QLineEdit#line_novels_name {
+    border: 1px solid #AFB5BB;
+    border-radius: 5px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 10px;
+    background: transparent;
+}
+
+QPushButton#btn_search {
+    background-color: #39668b;
+    color: #ffffff;
+    border-radius: 5px;
+    border-style: none;
+    width: 45px;
+    height: 25px;
+    font-size: 12px;
+}
+
+/*QLineEdit#line_novels_name:focus {*/
+    /*border: none;*/
+    /*outline: medium;*/
+/*}*/

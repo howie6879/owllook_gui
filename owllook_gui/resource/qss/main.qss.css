@@ -1,20 +1,9 @@
-QWidget {
-    background-color: #222222;
-}
+/*QWidget#home {*/
+/*background-color: #222222;*/
+/*}*/
 
 QLabel {
-    background-color: #222222;
-    color: #fff;
-}
-
-QLabel.lbl3 {
-    font-size: 20px;
-}
-
-QLineEdit {
-    background-color: aliceblue;
-    color: #618b38;
-    font-weight: bold;
+    color: #474747;
 }
 
 QPushButton {
@@ -23,4 +12,20 @@ QPushButton {
     border-radius: 5px;
     border-style: none;
     height: 25px;
+    font-size: 14px;
+}
+
+QTableView, QTableWidget {
+    selection-background-color: #dbdada;
+    font-size: 12px;
+    background-color: white;
+    border: 1px solid #E0DDDC;
+    gridline-color: lightgray;
+}
+
+QHeaderView::section {
+    background-color: white;
+    border: 0px solid #E0DDDC;
+    border-bottom: 1px solid #E0DDDC;
+    height: 20px;
 }
