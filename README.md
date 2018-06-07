@@ -48,7 +48,7 @@ python owllook.py
 
 **主界面**
 
-![home](/Users/howie/Documents/work/pyqt/git/owllook_gui/docs/images/home.jpg)
+![home](./docs/images/home.jpg)
 
 ### 协议
 
