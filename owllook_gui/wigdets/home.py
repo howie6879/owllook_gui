@@ -8,8 +8,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from owllook_gui.owl_resource import *
 from owllook_gui.config import Config
-from owllook_gui.database import books, engine, sql_delete_item, sql_get_all_result
-from owllook_gui.spider import get_novels_info
+from owllook_gui.database import books, engine, sql_delete_item, sql_get_all_result, sql_update_item
+from owllook_gui.spider import get_novels_info, get_latest_chapter
 
 from owllook_gui.wigdets import About, Search, SystemTray, table_widget_item_center, load_style_sheet
 
@@ -108,7 +108,7 @@ class OwlHome(QtWidgets.QMainWindow):
 
             self.event_loop.create_task(async_delete_item(self))
 
-    def func_refresh(self, refresh=False):
+    def func_refresh(self):
         """
         刷新最新章节
         :return:
@@ -116,8 +116,7 @@ class OwlHome(QtWidgets.QMainWindow):
 
         async def async_get_books(self):
 
-            if refresh:
-                Config.LOGGER.info('刷新数据成功')
+            # Config.LOGGER.info('刷新数据成功')
 
             result = await sql_get_all_result(table_name='books', engine=self.engine)
 
@@ -141,6 +140,25 @@ class OwlHome(QtWidgets.QMainWindow):
                 self.table_widget.setHorizontalHeaderLabels(["小说名", "目录", "最新章节"])
 
                 for index, each in enumerate(result):
+                    latest_chapter_name, latest_chapter_url = await get_latest_chapter(each[2])
+                    if not latest_chapter_name or not latest_chapter_url:
+                        latest_chapter_name, latest_chapter_url = each[3], each[4]
+                    if each[3] != latest_chapter_name:
+                        # 需要更新数据库
+                        condition = {
+                            'title': each[1],
+                            'url': each[2]
+                        }
+                        values = {
+                            'latest_chapter_name': latest_chapter_name,
+                            'latest_chapter_url': latest_chapter_url
+                        }
+
+                        await sql_update_item(table='books',
+                                              engine=self.engine,
+                                              condition=condition,
+                                              values=values)
+
                     self.table_widget.setItem(index, 0, table_widget_item_center(each[1]))
                     label_chapter = QtWidgets.QLabel("<a href='{}'>查看目录</a>".format(each[2]))
                     label_chapter.setOpenExternalLinks(True)
@@ -148,7 +166,8 @@ class OwlHome(QtWidgets.QMainWindow):
                     label_chapter.setAlignment(QtCore.Qt.AlignCenter)
                     self.table_widget.setCellWidget(index, 1, label_chapter)
 
-                    label_latest_chapter = QtWidgets.QLabel("<a href='{}'>{}</a>".format(each[4], each[3]))
+                    label_latest_chapter = QtWidgets.QLabel(
+                        "<a href='{}'>{}</a>".format(latest_chapter_url, latest_chapter_name))
                     label_latest_chapter.setOpenExternalLinks(True)
                     label_latest_chapter.setObjectName('lable_chapter')
                     label_latest_chapter.setAlignment(QtCore.Qt.AlignCenter)
@@ -165,7 +184,8 @@ class OwlHome(QtWidgets.QMainWindow):
 
             self.set_layout()
             self.func_win_center()
-            self.show()
+            if not self.isVisible():
+                self.show()
 
         self.event_loop.create_task(async_get_books(self))
 
