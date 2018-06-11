@@ -50,6 +50,14 @@ python owllook.py
 
 ![home](./docs/images/home.jpg)
 
+### 打包
+
+``` python
+pip install pyinstaller
+pyinstaller -F owllook_gui/app.py
+pyinstaller --windowed --onefile --clean --noconfirm owllook.spec
+```
+
 ### 协议
 
 owllook is offered under the Apache 2 license.
