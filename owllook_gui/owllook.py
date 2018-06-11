@@ -22,7 +22,6 @@ asyncio.set_event_loop(event_loop)
 try:
     with event_loop:
         main = OwlHome(event_loop)
-        main.show()
         event_loop.run_forever()
     sys.exit(0)
 except:

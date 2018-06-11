@@ -6,15 +6,17 @@ import asyncio
 from PyQt5 import QtWidgets, QtGui
 
 from owllook_gui.owl_resource import *
-from owllook_gui.spider import get_novels_info
+from owllook_gui.database import books, sql_insert_item
+from owllook_gui.spider import get_latest_chapter, get_novels_info
 
 from owllook_gui.wigdets.wigdets_tools import load_style_sheet, table_widget_item_center
 
 
 class Search(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        super().__init__()
         self.event_loop = asyncio.get_event_loop()
+        self.parent = parent
         self.table_widget = QtWidgets.QTableWidget()
         self.init_ui()
 
@@ -40,9 +42,9 @@ class Search(QtWidgets.QWidget):
         self.btn_search.clicked.connect(self.func_search_book)
         self.btn_search.setObjectName('btn_search')
 
-        self.btn_add = QtWidgets.QPushButton('添加源')
-        self.btn_add.clicked.connect(self.func_add_book)
-        self.btn_add.setObjectName('btn_search')
+        self.btn_end = QtWidgets.QPushButton('添加结束')
+        self.btn_end.clicked.connect(self.func_end)
+        self.btn_end.setObjectName('btn_end')
 
         self.h_box.addWidget(self.line_novels_name)
         self.h_box.addWidget(self.btn_search)
@@ -51,10 +53,11 @@ class Search(QtWidgets.QWidget):
         self.v_box.addLayout(self.h_box)
 
         self.setLayout(self.v_box)
-        self.resize(380, 60)
+        self.resize(415, 115)
 
-    def func_add_book(self):
-        pass
+    def func_end(self):
+        self.parent.func_refresh()
+        self.hide()
 
     def func_line_clear(self):
         self.line_novels_name.setText('')
@@ -62,22 +65,23 @@ class Search(QtWidgets.QWidget):
     def func_search_book(self):
         name = self.line_novels_name.text()
 
-        if name:
-            new_event_loop = asyncio.new_event_loop()
-            # intitle:{} 小说 阅读  {} 目录 笔趣阁
-            async_func = get_novels_info(
+        async def sync_search_book(self):
+            """
+            开启异步函数进行书籍获取
+            百度 demo: intitle:{} 小说 阅读  {} 目录 笔趣阁
+            :return:
+            """
+            async_func_res = await get_novels_info(
                 class_name='so',
                 novels_name='{} 最新章节 阅读'.format(name)
             )
 
-            task = new_event_loop.run_until_complete(async_func)
-            new_event_loop.close()
-
-            if len(task):
+            if len(async_func_res):
                 # 表格布局
                 self.table_widget.clear()
-                self.table_widget.setColumnCount(3)
-                self.table_widget.setRowCount(len(task))
+                headers = ["标题", "来源"]
+                self.table_widget.setColumnCount(len(headers))
+                self.table_widget.setRowCount(len(async_func_res))
                 self.table_widget.setObjectName('search_books_table')
                 # 表格100%填满窗口
                 self.table_widget.horizontalHeader().setStretchLastSection(True)
@@ -89,17 +93,33 @@ class Search(QtWidgets.QWidget):
                 # 设置字体
                 self.table_widget.setFont(QtGui.QFont('SansSerif', 12))
                 # 设置header
-                self.table_widget.setHorizontalHeaderLabels(["标题", "来源", "操作"])
+                self.table_widget.setHorizontalHeaderLabels(headers)
+                # 设置点击事件 双击插入
+                self.table_widget.itemDoubleClicked.connect(self.func_table_item_click)
 
-                for index, each in enumerate(task):
+                for index, each in enumerate(async_func_res):
                     self.table_widget.setItem(index, 0, table_widget_item_center(each.get('title')))
                     self.table_widget.setItem(index, 1, table_widget_item_center(each.get('url')))
-                    self.table_widget.setItem(index, 2, table_widget_item_center("添加"))
 
                 self.v_box.addWidget(self.table_widget)
                 self.v_box.addStretch()
-                self.v_box.addWidget(self.btn_add)
+                self.v_box.addWidget(self.btn_end)
                 self.resize(500, 300)
+
+        if name:
+            self.event_loop.create_task(sync_search_book(self))
+        else:
+            self.line_novels_name.setPlaceholderText('请输入小说名!')
+
+    def func_table_item_click(self, item):
+        # 获取某行数据
+        title = self.table_widget.item(item.row(), 0).text()
+        url = self.table_widget.item(item.row(), 1).text()
+        values = {
+            'title': self.line_novels_name.text() or title,
+            'url': url
+        }
+        self.event_loop.create_task(sql_insert_item(table_ins=books, engine=self.parent.engine, values=values))
 
     def closeEvent(self, event):
         self.hide()

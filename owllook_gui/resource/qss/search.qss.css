@@ -1,23 +1,40 @@
 QLineEdit#line_novels_name {
     border: 1px solid #AFB5BB;
     border-radius: 5px;
-    height: 25px;
-    line-height: 25px;
-    font-size: 10px;
+    height: 29px;
+    line-height: 29px;
+    font-size: 12px;
     background: transparent;
 }
 
-QPushButton#btn_search {
+QPushButton#btn_search, QPushButton#btn_end {
     background-color: #39668b;
     color: #ffffff;
     border-radius: 5px;
     border-style: none;
-    width: 45px;
-    height: 25px;
-    font-size: 12px;
+    width: 50px;
+    height: 29px;
+    font-size: 14px;
 }
 
-/*QLineEdit#line_novels_name:focus {*/
-    /*border: none;*/
-    /*outline: medium;*/
-/*}*/
+QTableView, QTableWidget {
+    selection-background-color: #dbdada;
+    font-family: SansSerif;
+    font-size: 12px;
+    background-color: white;
+    border: 1px solid #E0DDDC;
+    gridline-color: lightgray;
+}
+
+QHeaderView::section {
+    background-color: white;
+    border: 0px solid #E0DDDC;
+    border-bottom: 1px solid #E0DDDC;
+    height: 20px;
+    font-size: 13px;
+    color: #2C2E32;
+}
+
+QLineEdit#line_novels_name:focus {
+    outline: medium;
+}

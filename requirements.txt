@@ -1,5 +1,7 @@
 aiohttp
 async_timeout
+bs4
 html5lib
 PyQt5>=5.10.1
 quamash
+sqlalchemy_aio

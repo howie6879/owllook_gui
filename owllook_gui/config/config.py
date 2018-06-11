@@ -33,7 +33,7 @@ class Config:
 
     # Basic Config
     BLACK_DOMAIN = ['www.17k.com', 'mm.17k.com', 'www.xs8.cn', 'www.zongheng.com', 'yunqi.qq.com', 'chuangshi.qq.com',
-                    'book.qidian.com', 'www.soduso.com', 'pages.book.qq.com', 'book.km.com', 'www.lread.net',
+                    'www.soduso.com', 'pages.book.qq.com', 'book.km.com', 'www.lread.net',
                     'www.0dsw.com', 'www.5200xsb.com', 'www.80txt.com', 'www.sodu.tw', 'www.shuquge.com',
                     'www.shenmanhua.com', 'xiaoshuo.sogou.com', 'www.999wx.com', 'zetianji8.com', 'www.bookso.net',
                     'm.23us.com', 'www.qbxsw.com', 'www.zhuzhudao.com', 'www.shengyan.org', 'www.360doc.com',
@@ -107,6 +107,8 @@ class Config:
         "www.suimeng.la": PLAN_01,
         "www.bequge.com": PLAN_01,
         "www.biquku.co": PLAN_01,
+        "www.jingcaiyuedu.com": PLAN_01,
+        "www.sxzzk.com": PLAN_01,
         "www.xbqge.com": PLAN_01,
         "www.aiquxs.com": PLAN_01,
         "www.23us.com": PLAN_01,
@@ -140,8 +142,8 @@ class Config:
         "www.8jzw.com": PLAN_01,
         "www.23xsw.cc": PLAN_01,
         "www.miaobige.com": PLAN_01,
-        "www.xs.la": PLAN_01,
         "www.44pq.co": PLAN_01,
+        "www.siluke.tw": PLAN_01,
         "www.50zw.la": PLAN_01,
         "www.33xs.com": PLAN_01,
         "www.zwdu.com": PLAN_01,
@@ -182,5 +184,8 @@ class Config:
         "www.bqg.cc": PLAN_01,
         "www.biqugezw.com": PLAN_01,
         "www.bbiquge.com": PLAN_01,
-        "www.aikantxt.la": PLAN_01
+        "www.aikantxt.la": PLAN_01,
+        "www.biquge.com.tw": PLAN_01,
+        "www.xxbiquge.com": PLAN_01,
+        "www.biquwo.com": PLAN_01,
     }

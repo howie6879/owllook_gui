@@ -38,8 +38,12 @@ class SoNovels(BaseNovels):
                 url = url[0] if url else None
 
             netloc = urlparse(url).netloc
+            # print(url)
+            # print(netloc)
 
             if netloc in self.latest_rules.keys():
+                if str(url).endswith(netloc + '/'):
+                    return None
                 if not url or 'baidu' in url or 'baike.so.com' in url or '.html' in url or netloc in self.black_domain:
                     return None
                 return {

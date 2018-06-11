@@ -4,10 +4,11 @@
 """
 import asyncio
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from owllook_gui.owl_resource import *
 from owllook_gui.config import Config
+from owllook_gui.database import books, engine, sql_delete_item, sql_get_all_result
 from owllook_gui.spider import get_novels_info
 
 from owllook_gui.wigdets import About, Search, SystemTray, table_widget_item_center, load_style_sheet
@@ -22,6 +23,7 @@ class OwlHome(QtWidgets.QMainWindow):
         self.icon_path = ':/resource/images/owl.png'
         self.system_tray_ins = SystemTray(icon_path=self.icon_path, parent=self)
         self.event_loop = event_loop if event_loop else asyncio.get_event_loop()
+        self.engine = engine
 
         self.system_tray_ins.show()
         self.init_ui()
@@ -32,47 +34,16 @@ class OwlHome(QtWidgets.QMainWindow):
         # 设置图标以及标题
         self.setWindowTitle(Config.APP_TITLE)
         self.setWindowIcon(QtGui.QIcon(self.icon_path))
-        # 布局
+
         self.bookshelf = QtWidgets.QLabel('书架暂无数据')
-        self.bookshelf.setFont(QtGui.QFont('SansSerif', 13))
+        self.bookshelf.setObjectName('bookshelf')
         self.bookshelf.setAlignment(QtCore.Qt.AlignCenter)
 
-        all_data = ''
+        # 检查更新
+        self.func_refresh()
 
-        if all_data:
-            # 表格布局
-            self.table_widget = QtWidgets.QTableWidget()
-            self.table_widget.setColumnCount(3)
-            self.table_widget.setRowCount(1)
-            self.table_widget.setObjectName('books_table')
-            # 表格100%填满窗口
-            self.table_widget.horizontalHeader().setStretchLastSection(True)
-            self.table_widget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-            # 设置选中表格整行
-            self.table_widget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-            # 设置表格不可编辑
-            self.table_widget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-            # 设置字体
-            self.table_widget.setFont(QtGui.QFont('SansSerif', 12))
-
-            self.table_widget.setHorizontalHeaderLabels(["小说名", "目录", "最新章节"])
-
-            # for index in range(self.table_widget.columnCount()):
-            #     head_item = self.table_widget.horizontalHeaderItem(index)
-            #     # 设置字体
-            #     head_item.setFont(QtGui.QFont('SansSerif', 12, QtGui.QFont.Bold))
-            #     head_item.setForeground(QtGui.QBrush(QtCore.Qt.gray))
-            #     head_item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-            self.table_widget.setItem(0, 0, table_widget_item_center('牧神记'))
-            self.table_widget.setItem(0, 1, table_widget_item_center("查看目录"))
-            self.table_widget.setItem(0, 2, table_widget_item_center("第100章：Hello World"))
-
-            self.middle_widget = self.table_widget
-            self.resize(420, 200)
-        else:
-            self.middle_widget = self.bookshelf
-            self.resize(300, 200)
-
+    def set_layout(self):
+        # 布局
         self.v_box = QtWidgets.QVBoxLayout()
         self.v_box.addStretch()
         self.v_box.addWidget(self.middle_widget)
@@ -102,9 +73,11 @@ class OwlHome(QtWidgets.QMainWindow):
         main_frame.setLayout(self.v_box)
         self.setCentralWidget(main_frame)
 
-        self.func_win_center()
-
     def func_about(self):
+        """
+        项目关于界面
+        :return:
+        """
         self.about_ins = About()
         self.about_ins.setWindowIcon(QtGui.QIcon(self.icon_path))
         self.about_ins.show()
@@ -112,11 +85,92 @@ class OwlHome(QtWidgets.QMainWindow):
     def func_check_version(self):
         pass
 
-    def func_refresh(self):
-        self.event_loop.create_task(get_novels_info(class_name='so', novels_name='intitle:雪中悍刀行 小说 阅读'))
+    def func_generate_menu(self, pos):
+        row_num = -1
+        for i in self.table_widget.selectionModel().selection().indexes():
+            row_num = i.row()
+
+        menu = QtWidgets.QMenu()
+        delete_item = menu.addAction("删除")
+        action = menu.exec_(self.table_widget.mapToGlobal(pos))
+        if action == delete_item:
+            # 获取某行数据
+            title = self.table_widget.item(row_num, 0).text()
+            url = self.table_widget.item(row_num, 1).text()
+            values = {
+                'title': title,
+                'url': url
+            }
+
+            async def async_delete_item(self):
+                await sql_delete_item(table_ins=books, engine=self.engine, values=values)
+                self.func_refresh()
+
+            self.event_loop.create_task(async_delete_item(self))
+
+    def func_refresh(self, refresh=False):
+        """
+        刷新最新章节
+        :return:
+        """
+
+        async def async_get_books(self):
+
+            if refresh:
+                Config.LOGGER.info('刷新数据成功')
+
+            result = await sql_get_all_result(table_name='books', engine=self.engine)
+
+            if result:
+                # 表格布局
+                self.table_widget = QtWidgets.QTableWidget()
+                self.table_widget.clear()
+                self.table_widget.setColumnCount(3)
+                self.table_widget.setRowCount(len(result))
+                self.table_widget.setObjectName('books_table')
+                # 表格100%填满窗口
+                self.table_widget.horizontalHeader().setStretchLastSection(True)
+                self.table_widget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+                # 设置选中表格整行
+                self.table_widget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+                # 设置表格不可编辑
+                self.table_widget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+                # 设置字体
+                # self.table_widget.setFont(QtGui.QFont('SansSerif', 12))
+
+                self.table_widget.setHorizontalHeaderLabels(["小说名", "目录", "最新章节"])
+
+                for index, each in enumerate(result):
+                    self.table_widget.setItem(index, 0, table_widget_item_center(each[1]))
+                    self.table_widget.setItem(index, 1, table_widget_item_center(each[2]))
+                    # self.table_widget.setItem(index, 2, table_widget_item_center(each[3]))
+                    lable_chapter = QtWidgets.QLabel("<a href='{}'>{}</a>".format(each[4], each[3]))
+                    lable_chapter.setOpenExternalLinks(True)
+                    lable_chapter.setObjectName('lable_chapter')
+                    lable_chapter.setAlignment(QtCore.Qt.AlignCenter)
+                    self.table_widget.setCellWidget(index, 2, lable_chapter)
+
+                self.middle_widget = self.table_widget
+                # 右键菜单
+                self.table_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                self.table_widget.customContextMenuRequested.connect(self.func_generate_menu)
+                self.resize(485, 250)
+            else:
+                self.middle_widget = self.bookshelf
+                self.resize(350, 250)
+
+            self.set_layout()
+            self.func_win_center()
+            self.show()
+
+        self.event_loop.create_task(async_get_books(self))
 
     def func_search(self):
-        self.search_ins = Search()
+        """
+        小说检索
+        :return:
+        """
+        self.search_ins = Search(self)
         self.search_ins.setWindowIcon(QtGui.QIcon(self.icon_path))
         self.search_ins.show()
 

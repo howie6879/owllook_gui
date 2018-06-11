@@ -6,19 +6,33 @@ QLabel {
     color: #474747;
 }
 
+QLabel#bookshelf {
+    color: #474747;
+    font-size: 14px;
+}
+
+QLabel#lable_chapter {
+    font-family: SansSerif;
+    font-size: 12px;
+    background-color: white;
+    /*color: black;*/
+}
+
 QPushButton {
     background-color: #39668b;
     color: #ffffff;
     border-radius: 5px;
     border-style: none;
-    height: 25px;
-    font-size: 14px;
+    height: 26px;
+    font-size: 13px;
 }
 
 QTableView, QTableWidget {
     selection-background-color: #dbdada;
+    font-family: SansSerif;
     font-size: 12px;
     background-color: white;
+    color: black;
     border: 1px solid #E0DDDC;
     gridline-color: lightgray;
 }
@@ -28,4 +42,5 @@ QHeaderView::section {
     border: 0px solid #E0DDDC;
     border-bottom: 1px solid #E0DDDC;
     height: 20px;
+    font-size: 13px;
 }
