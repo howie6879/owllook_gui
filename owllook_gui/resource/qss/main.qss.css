@@ -11,7 +11,7 @@ QLabel#bookshelf {
     font-size: 14px;
 }
 
-QLabel#lable_chapter {
+QLabel#lable_chapter, QLabel#label_chapter {
     font-family: SansSerif;
     font-size: 12px;
     background-color: white;

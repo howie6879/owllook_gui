@@ -142,13 +142,17 @@ class OwlHome(QtWidgets.QMainWindow):
 
                 for index, each in enumerate(result):
                     self.table_widget.setItem(index, 0, table_widget_item_center(each[1]))
-                    self.table_widget.setItem(index, 1, table_widget_item_center(each[2]))
-                    # self.table_widget.setItem(index, 2, table_widget_item_center(each[3]))
-                    lable_chapter = QtWidgets.QLabel("<a href='{}'>{}</a>".format(each[4], each[3]))
-                    lable_chapter.setOpenExternalLinks(True)
-                    lable_chapter.setObjectName('lable_chapter')
-                    lable_chapter.setAlignment(QtCore.Qt.AlignCenter)
-                    self.table_widget.setCellWidget(index, 2, lable_chapter)
+                    label_chapter = QtWidgets.QLabel("<a href='{}'>查看目录</a>".format(each[2]))
+                    label_chapter.setOpenExternalLinks(True)
+                    label_chapter.setObjectName('lable_chapter')
+                    label_chapter.setAlignment(QtCore.Qt.AlignCenter)
+                    self.table_widget.setCellWidget(index, 1, label_chapter)
+
+                    label_latest_chapter = QtWidgets.QLabel("<a href='{}'>{}</a>".format(each[4], each[3]))
+                    label_latest_chapter.setOpenExternalLinks(True)
+                    label_latest_chapter.setObjectName('lable_chapter')
+                    label_latest_chapter.setAlignment(QtCore.Qt.AlignCenter)
+                    self.table_widget.setCellWidget(index, 2, label_latest_chapter)
 
                 self.middle_widget = self.table_widget
                 # 右键菜单
