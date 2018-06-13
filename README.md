@@ -56,6 +56,9 @@ python owllook.py
 pip install pyinstaller
 pyinstaller -F owllook_gui/app.py
 pyinstaller --windowed --onefile --clean --noconfirm owllook.spec
+
+# 或者使用py2app
+python setup.py py2app -A
 ```
 
 ### 协议

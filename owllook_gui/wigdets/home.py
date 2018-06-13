@@ -37,7 +37,7 @@ class OwlHome(QtWidgets.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(self.icon_path))
 
         # 检查更新
-        self.func_refresh()
+        self.func_refresh(refresh=True)
 
     def set_layout(self):
         # 布局
@@ -55,7 +55,7 @@ class OwlHome(QtWidgets.QMainWindow):
         self.btn_about.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         self.btn_search_book.clicked.connect(self.func_search)
-        self.btn_refresh.clicked.connect(self.func_refresh)
+        self.btn_refresh.clicked.connect(lambda: self.func_refresh(refresh=True))
         self.btn_about.clicked.connect(self.func_about)
 
         self.h_box = QtWidgets.QHBoxLayout()
@@ -115,10 +115,9 @@ class OwlHome(QtWidgets.QMainWindow):
         :return:
         """
 
-        async def async_get_books(self):
+        async def async_get_books(self, refresh):
 
             # Config.LOGGER.info('刷新数据成功')
-
             result = await sql_get_all_result(table_name='books', engine=self.engine)
 
             if result:
@@ -165,6 +164,7 @@ class OwlHome(QtWidgets.QMainWindow):
 
                     self.table_widget.setItem(index, 0, table_widget_item_center(each[1]))
                     label_chapter = QtWidgets.QLabel("<a href='{}'>查看目录</a>".format(each[2]))
+                    label_chapter.setToolTip(each[2])
                     label_chapter.setOpenExternalLinks(True)
                     label_chapter.setObjectName('lable_chapter')
                     label_chapter.setAlignment(QtCore.Qt.AlignCenter)
@@ -194,7 +194,7 @@ class OwlHome(QtWidgets.QMainWindow):
             if not self.isVisible():
                 self.show()
 
-        self.event_loop.create_task(async_get_books(self))
+        self.event_loop.create_task(async_get_books(self, refresh))
 
     def func_search(self):
         """

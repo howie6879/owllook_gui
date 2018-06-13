@@ -28,6 +28,6 @@ books = Table(
 engine = create_engine(
     # In-memory sqlite database cannot be accessed from different
     # threads, use file.
-    'sqlite:///' + db_path, strategy=ASYNCIO_STRATEGY
+    'sqlite:///' + '/tmp/owllook_gui.db', strategy=ASYNCIO_STRATEGY
 )
 metadata.create_all(engine._engine)

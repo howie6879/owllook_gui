@@ -56,7 +56,7 @@ class Search(QtWidgets.QWidget):
         self.resize(415, 115)
 
     def func_end(self):
-        self.parent.func_refresh()
+        self.parent.func_refresh(refresh=False)
         self.hide()
 
     def func_line_clear(self):
