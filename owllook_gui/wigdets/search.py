@@ -104,6 +104,7 @@ class Search(QtWidgets.QWidget):
                 self.v_box.addWidget(self.table_widget)
                 self.v_box.addStretch()
                 self.v_box.addWidget(self.btn_end)
+                self.setWindowTitle(name + ' - 双击即可添加')
                 self.resize(500, 300)
 
         if name:
@@ -119,7 +120,13 @@ class Search(QtWidgets.QWidget):
             'title': self.line_novels_name.text() or title,
             'url': url
         }
-        self.event_loop.create_task(sql_insert_item(table_ins=books, engine=self.parent.engine, values=values))
+
+        async def async_insert_item(self):
+            await sql_insert_item(table_ins=books, engine=self.parent.engine, values=values)
+            QtWidgets.QMessageBox.information(self, "Information",
+                                              self.tr(self.line_novels_name.text() + " - 保存成功"))
+
+        self.event_loop.create_task(async_insert_item(self))
 
     def closeEvent(self, event):
         self.hide()

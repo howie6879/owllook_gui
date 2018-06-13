@@ -4,6 +4,7 @@
 """
 import asyncio
 
+from bs4 import BeautifulSoup
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from owllook_gui.owl_resource import *
@@ -34,10 +35,6 @@ class OwlHome(QtWidgets.QMainWindow):
         # 设置图标以及标题
         self.setWindowTitle(Config.APP_TITLE)
         self.setWindowIcon(QtGui.QIcon(self.icon_path))
-
-        self.bookshelf = QtWidgets.QLabel('书架暂无数据')
-        self.bookshelf.setObjectName('bookshelf')
-        self.bookshelf.setAlignment(QtCore.Qt.AlignCenter)
 
         # 检查更新
         self.func_refresh()
@@ -93,10 +90,14 @@ class OwlHome(QtWidgets.QMainWindow):
         menu = QtWidgets.QMenu()
         delete_item = menu.addAction("删除")
         action = menu.exec_(self.table_widget.mapToGlobal(pos))
+
         if action == delete_item:
             # 获取某行数据
             title = self.table_widget.item(row_num, 0).text()
-            url = self.table_widget.item(row_num, 1).text()
+            url_str = self.table_widget.cellWidget(row_num, 1).text()
+            soup = BeautifulSoup(url_str, 'html.parser')
+            url = soup.find('a').get('href')
+
             values = {
                 'title': title,
                 'url': url
@@ -104,11 +105,11 @@ class OwlHome(QtWidgets.QMainWindow):
 
             async def async_delete_item(self):
                 await sql_delete_item(table_ins=books, engine=self.engine, values=values)
-                self.func_refresh()
+                self.func_refresh(refresh=False)
 
             self.event_loop.create_task(async_delete_item(self))
 
-    def func_refresh(self):
+    def func_refresh(self, refresh=True):
         """
         刷新最新章节
         :return:
@@ -140,24 +141,27 @@ class OwlHome(QtWidgets.QMainWindow):
                 self.table_widget.setHorizontalHeaderLabels(["小说名", "目录", "最新章节"])
 
                 for index, each in enumerate(result):
-                    latest_chapter_name, latest_chapter_url = await get_latest_chapter(each[2])
-                    if not latest_chapter_name or not latest_chapter_url:
-                        latest_chapter_name, latest_chapter_url = each[3], each[4]
-                    if each[3] != latest_chapter_name:
-                        # 需要更新数据库
-                        condition = {
-                            'title': each[1],
-                            'url': each[2]
-                        }
-                        values = {
-                            'latest_chapter_name': latest_chapter_name,
-                            'latest_chapter_url': latest_chapter_url
-                        }
+                    if refresh:
+                        latest_chapter_name, latest_chapter_url = await get_latest_chapter(each[2])
+                        if not latest_chapter_name or not latest_chapter_url:
+                            latest_chapter_name, latest_chapter_url = each[3], each[4]
+                        if each[3] != latest_chapter_name:
+                            # 需要更新数据库
+                            condition = {
+                                'title': each[1],
+                                'url': each[2]
+                            }
+                            values = {
+                                'latest_chapter_name': latest_chapter_name,
+                                'latest_chapter_url': latest_chapter_url
+                            }
 
-                        await sql_update_item(table='books',
-                                              engine=self.engine,
-                                              condition=condition,
-                                              values=values)
+                            await sql_update_item(table='books',
+                                                  engine=self.engine,
+                                                  condition=condition,
+                                                  values=values)
+                    else:
+                        latest_chapter_name, latest_chapter_url = each[3], each[4]
 
                     self.table_widget.setItem(index, 0, table_widget_item_center(each[1]))
                     label_chapter = QtWidgets.QLabel("<a href='{}'>查看目录</a>".format(each[2]))
@@ -179,6 +183,9 @@ class OwlHome(QtWidgets.QMainWindow):
                 self.table_widget.customContextMenuRequested.connect(self.func_generate_menu)
                 self.resize(485, 250)
             else:
+                self.bookshelf = QtWidgets.QLabel('书架暂无数据')
+                self.bookshelf.setObjectName('bookshelf')
+                self.bookshelf.setAlignment(QtCore.Qt.AlignCenter)
                 self.middle_widget = self.bookshelf
                 self.resize(350, 250)
 
