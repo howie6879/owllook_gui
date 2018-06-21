@@ -6,19 +6,20 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction, QMenu, QSystemTrayIcon
 
+from owllook_gui.config import Config
 from owllook_gui.wigdets.about import About
 
 
 class SystemTray(QSystemTrayIcon):
 
-    def __init__(self, icon_path, parent=None):
-        super(SystemTray, self).__init__(parent)
+    def __init__(self, parent=None):
+        super(SystemTray, self).__init__()
         self.parent = parent
         self.icon = self.MessageIcon()
-        self.icon_path = icon_path
+        self.icon_path = Config.ICO_PATH
 
         # 在系统托盘处显示图标
-        self.setIcon(QIcon(icon_path))
+        self.setIcon(QIcon(self.icon_path))
         # 设置图标
         self.set_default_menu()
         # 设置点击事件

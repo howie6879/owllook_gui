@@ -14,7 +14,7 @@ ps：在看QT，同样是练手项目~
 
 - Mac(已支持)
 - Windows
-- Linux
+- Linux(已支持)
 
 具体下载地址请看[releases](https://github.com/howie6879/owllook_gui/releases)，下载好就可以直接使用，欢迎提交`PR`和`issue`
 
@@ -54,7 +54,7 @@ python owllook.py
 
 ``` python
 pip install pyinstaller
-pyinstaller -F owllook_gui/app.py
+pyinstaller -F owllook_gui/owllook.py
 pyinstaller --windowed --onefile --clean --noconfirm owllook.spec
 
 # 或者使用py2app

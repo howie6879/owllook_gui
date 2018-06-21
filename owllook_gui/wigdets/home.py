@@ -21,8 +21,8 @@ class OwlHome(QtWidgets.QMainWindow):
 
     def __init__(self, event_loop=None, parents=None):
         super(OwlHome, self).__init__(parent=parents)
-        self.icon_path = ':/resource/images/owl.png'
-        self.system_tray_ins = SystemTray(icon_path=self.icon_path, parent=self)
+        self.icon_path = Config.ICO_PATH
+        self.system_tray_ins = SystemTray(parent=self)
         self.event_loop = event_loop if event_loop else asyncio.get_event_loop()
         self.engine = engine
 

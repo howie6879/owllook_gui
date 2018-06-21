@@ -22,6 +22,7 @@ class Config:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     LOGGER = logging.getLogger()
     VERSION = 0.1
+    ICO_PATH = ':/resource/images/owl.png'
 
     # Engine config
     URL_PHONE = 'https://m.baidu.com/s'
